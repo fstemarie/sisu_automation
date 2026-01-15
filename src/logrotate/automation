@@ -1,0 +1,11 @@
+compress
+missingok
+notifempty
+rotate 7
+monthly
+su francois users
+
+/var/log/automation/development.*.log /var/log/automation/home.*.log {
+    rotate 14
+    weekly
+}
