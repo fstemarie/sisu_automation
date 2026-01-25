@@ -1,5 +1,8 @@
 #! /usr/bin/fish
 
+## Disabled
+exit
+
 cd (status dirname)
 set scripts \
     "backup/restic/development.bkp.fish" \
