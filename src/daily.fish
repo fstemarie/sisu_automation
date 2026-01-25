@@ -23,5 +23,3 @@ echo -e $notifications | curl -T- \
     -H "priority: low" \
     -H "markdown: yes" \
     https://ntfy.sh/automation_ewNXGlvorS6g8NUr
-
-main
