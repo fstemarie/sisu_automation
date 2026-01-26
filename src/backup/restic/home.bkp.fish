@@ -34,18 +34,33 @@ info "Source folder: $src"
 
 info "Creating restic snapshot"
 pushd "$src"
+printf '%s\n' \
+    Desktop \
+    Documents \
+    Downloads \
+    Music \
+    Pictures \
+    Templates \
+    Videos \
+    .config \
+    .gnupg \
+    .password-store \
+    .pki \
+    .secrets \
+    .ssh \
+    .vim \
+    .face \
+    .gitconfig \
+    .profile \
+    .viminfo \
+    .vimrc |
 restic backup \
     --host=$hostname \
     --tag=home \
     --no-scan \
-    --exclude-caches \
-    --exclude={'devel', 'development', '.cache', '.vscode*', '.npm'} \
-    --exclude={'.pyenv', '.dotnet', '.git', '.docker/buildx'} \
-    --exclude={'fish_history', '.gnupg/S.gpg-agent*', '.gnupg/*.bak'} \
-    --exclude={'.config/Code', '.mozilla', '.config/Element'} \
-    --exclude={'.local/share/Trash', '.local/share/powershell', '.local/share/fonts', '.local/share/epiphany'} \
-    --exclude='.local/share/org.gnome.Epiphany.*' \
-    .  2>&1 | tee -a $log
+    --files-from - \
+    --exclude={"Documents/development", ".config/Element", ".config/Code"} \
+    --exclude-caches 2>&1 | tee -a $log
 if test $status -ne 0
     error "There was an error during the snapshot"
     exit 1
