@@ -46,6 +46,7 @@ info "Destination folder: $dst"
 info "Creating archive $arch"
 pushd "$src" || { echo "pushd failed - $src"; exit 1; }
 printf '%s\n' \
+    Desktop \
     Documents \
     Downloads \
     Music \

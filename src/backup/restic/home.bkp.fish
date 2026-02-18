@@ -5,6 +5,7 @@ set log "/var/log/automation/home.restic.log"
 set script (status basename)
 
 source (status dirname)/../../log.fish
+source /data/config/restic/restic.fish
 
 echo "
 
@@ -15,22 +16,32 @@ echo "
 -------------------------------------
 " | tee -a $log
 
-if test -z $RESTIC_REPOSITORY
-    error "RESTIC_REPOSITORY empty. Cannot proceed"
-    exit 1
-end
-
-if test -z "$RESTIC_PASSWORD_COMMAND"
-    error "RESTIC_PASSWORD_COMMAND empty or does not exist. Cannot proceed"
-    exit 1
-end
-
 # if the source folder doesn't exist, then there is nothing to backup
 if test ! -d "$src"
     error "Source folder does not exist. Cannot proceed"
     exit 1
 end
 info "Source folder: $src"
+
+if test -z "$RESTIC_REPOSITORY"
+    error "RESTIC_REPOSITORY empty. Cannot proceed"
+    exit 1
+end
+
+if test -z "$RESTIC_PASSWORD_FILE"; or not test -f "$RESTIC_PASSWORD_FILE"
+    error "RESTIC_PASSWORD_FILE empty or does not exist. Cannot proceed"
+    exit 1
+end
+
+if test -z "$AWS_ACCESS_KEY_ID"
+    error "AWS_ACCESS_KEY_ID empty or does not exist. Cannot proceed"
+    exit 1
+end
+
+if test -z "$AWS_SECRET_ACCESS_KEY"
+    error "AWS_SECRET_ACCESS_KEY empty or does not exist. Cannot proceed"
+    exit 1
+end
 
 info "Creating restic snapshot"
 pushd "$src"

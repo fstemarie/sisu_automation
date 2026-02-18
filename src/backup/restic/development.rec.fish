@@ -2,6 +2,8 @@
 
 set dst "$HOME/development"
 
+source /data/config/restic/restic.fish
+
 echo "
 
 
@@ -10,16 +12,6 @@ echo "
 "(date -Iseconds)"
 -------------------------------------
 "
-
-if test -z "$RESTIC_REPOSITORY"
-    echo (set_color brred)"[ERROR] RESTIC_REPOSITORY empty. Cannot proceed" >&2
-    exit 1
-end
-
-if test -z "$RESTIC_PASSWORD_FILE" || ! test -e "$RESTIC_PASSWORD_FILE" 
-    echo (set_color brred)"[ERROR] RESTIC_PASSWORD_FILE empty or does not exist. Cannot proceed" >&2
-    exit 1
-end
 
 # Append date to name to avoid data loss
 if test -d "$dst"
@@ -31,6 +23,26 @@ if test -d "$dst"
         sleep 2
         set dst "$old."(date +%s)
     end
+end
+
+if test -z "$RESTIC_REPOSITORY"
+    error "RESTIC_REPOSITORY empty. Cannot proceed"
+    exit 1
+end
+
+if test -z "$RESTIC_PASSWORD_FILE"; or test -f "$RESTIC_PASSWORD_FILE"
+    error "RESTIC_PASSWORD_FILE empty or does not exist. Cannot proceed"
+    exit 1
+end
+
+if test -z "$AWS_ACCESS_KEY_ID"
+    error "AWS_ACCESS_KEY_ID empty or does not exist. Cannot proceed"
+    exit 1
+end
+
+if test -z "$AWS_SECRET_ACCESS_KEY"
+    error "AWS_SECRET_ACCESS_KEY empty or does not exist. Cannot proceed"
+    exit 1
 end
 
 # Create non-existing destination
