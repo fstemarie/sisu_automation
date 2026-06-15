@@ -1,71 +1,92 @@
 #! /usr/bin/fish
 
-set src "$HOME/Documents/development"
-set log "/var/log/automation/development.restic.log"
+set src "/home/francois/Documents/development"
+set log "/var/log/automation/development.restic.bkp.log"
 set script (status basename)
 
-source (status dirname)/../../log.fish
+# inclut le fichier log.fish pour utiliser les fonctions d'écriture de log
+source /home/francois/Documents/development/automation/src/tools/log.fish
+or source /data/automation/tools/log.fish
 source /data/config/restic/restic.fish
 
+# Ecrit l'entete du log pour cette execution du script
 echo "
 
 -------------------------------------
-[[ Running $script ]]
+[[ Execution de "(status basename)" ]]
 "(date -Iseconds)"
 -------------------------------------
 " | tee -a $log
 
-# if the source folder doesn't exist, then there is nothing to backup
-if test ! -d "$src"
-    error "Source folder does not exist. Cannot proceed"
+#region Verifie que les variables d'environnement nécessaires sont définies et valides
+# Verifie que la variable d'environnement RESTIC_REPOSITORY est définie et n'est pas vide
+info "Vérification de la variable d'environnement RESTIC_REPOSITORY"
+if test -n "$RESTIC_REPOSITORY"
+    success "RESTIC_REPOSITORY est definie"
+else
+    error "RESTIC_REPOSITORY est non defini"
     exit 1
 end
-info "Source folder: $src"
-
-if test -z "$RESTIC_REPOSITORY"
-    error "RESTIC_REPOSITORY empty. Cannot proceed"
+# Verifie que le fichier de mot de passe existe et n'est pas vide
+info "Vérification de la variable d'environnement RESTIC_PASSWORD_FILE"
+if test -n "$RESTIC_PASSWORD_FILE"; and test -e "$RESTIC_PASSWORD_FILE"
+    success "RESTIC_PASSWORD_FILE est definie et existe"
+else
+    error "RESTIC_PASSWORD_FILE vide ou n'existe pas"
     exit 1
 end
-
-if test -z "$RESTIC_PASSWORD_FILE"; or not test -f "$RESTIC_PASSWORD_FILE"
-    error "RESTIC_PASSWORD_FILE empty or does not exist. Cannot proceed"
+info "Vérification de la variable d'environnement AWS_ACCESS_KEY_ID"
+if test -n "$AWS_ACCESS_KEY_ID"
+    success "AWS_ACCESS_KEY_ID est definie"
+else
+    error "AWS_ACCESS_KEY_ID vide ou n'existe pas. Impossible de continuer"
     exit 1
 end
-
-if test -z "$AWS_ACCESS_KEY_ID"
-    error "AWS_ACCESS_KEY_ID empty or does not exist. Cannot proceed"
+info "Vérification de la variable d'environnement AWS_SECRET_ACCESS_KEY"
+if test -n "$AWS_SECRET_ACCESS_KEY"
+    success "AWS_SECRET_ACCESS_KEY est definie"
+else
+    error "AWS_SECRET_ACCESS_KEY vide ou n'existe pas. Impossible de continuer"
     exit 1
 end
-
-if test -z "$AWS_SECRET_ACCESS_KEY"
-    error "AWS_SECRET_ACCESS_KEY empty or does not exist. Cannot proceed"
+# Verifie que le dossier source existe
+info "Vérification de l'existence du dossier source"
+if test -d "$src"
+    success "Le dossier source existe"
+else
+    error "Le dossier source n'existe pas"
     exit 1
 end
+#endregion
 
-info "Creating restic snapshot"
-pushd "$src"
+info "Creation du snapshot restic"
+cd "$src"
 restic backup \
-    --host=$hostname \
-    --tag=development \
+    --host $hostname \
+    --tag development \
     --no-scan \
     --exclude-caches \
-    --exclude={'.venv', '.git', '__pycache__', 'node_modules'} \
+    --exclude ".venv" --exclude ".git" \
+    --exclude "__pycache__" --exclude "node_modules" \
     .  2>&1 | tee -a $log
-if test $status -ne 0
-    error "There was an error during the snapshot"
+# Vérifie si la commande backup a réussi
+if test $pipestatus[1] -ne 0
+    error "La sauvegarde a échoué"
     exit 1
 end
-popd
-log "Snapshot created successfully"
+success "La sauvegarde a réussi"
+#endregion
 
-info "Forgetting snapshots"
+# Supprime les snapshots plus anciens que 4 semaines en gardant au moins un snapshot par semaine
+info "Effacement des snapshots"
 restic forget \
-    --tag=development \
-    --keep-daily 1 \
-    --keep-weekly 4 \
-    --keep-monthly=6  2>&1 | tee -a $log
-if test $status -ne 0
-    error "Unable to forget snapshots"
+    --host $hostname \
+    --tag development \
+    --keep-daily 7 --keep-weekly 4 --keep-monthly 6 2>&1 | tee -a $log
+# Vérifie si la commande forget a réussi
+if test $pipestatus[1] -ne 0
+    error "La suppression des snapshots a échouée"
     exit 1
 end
-info "Snapshots forgotten successfully"
+success "La suppression des snapshots a réussie"
+#endregion
