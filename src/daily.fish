@@ -14,7 +14,8 @@ set scripts \
     "backup/restic/development.bkp.fish" \
     "backup/restic/home.bkp.fish" \
     "backup/tar/home.diff.bkp.fish" \
-    "backup/tar/development.diff.bkp.fish"
+    "backup/tar/development.diff.bkp.fish" \
+    "backup/rclone/mirror.bkp.fish"
 
 restic unlock
 for script in $scripts
