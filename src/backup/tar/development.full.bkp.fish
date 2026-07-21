@@ -63,10 +63,10 @@ tar --create --verbose --zstd \
     --listed-incremental "$full_snar" \
     --exclude '.venv' --exclude 'node_modules' --exclude '.git' \
     --file "$full_arch" --directory (dirname "$src") \
-    (basename "$src")  2>&1 | tee -a $log
-# Vérifie si la commande tar a réussi, si ce n'est pas le cas, log une erreur et quitte le script
+    (basename "$src") 2>&1 | tee -a $log
+# Verifie que la commande tar s'est bien exécutée
 if test $pipestatus[1] -ne 0
-    error "Echec de la sauvegarde"
+    error "La sauvegarde a échoué"
     exit 1
 end
 success "La sauvegarde a réussi"
