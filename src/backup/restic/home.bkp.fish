@@ -63,9 +63,11 @@ cd "$src"
 restic backup \
     --host $hostname \
     --tag home \
-    --exclude 'Documents/development' --exclude '.cache' --exclude '.vscode*' \
-    --exclude '.var' --exclude '.mozilla' --exclude '.dotnet' --exclude 'Xmas' \
-    --exclude '.copilot' --exclude '.local' --exclude 'Games' \
+    --exclude 'Documents/development' --exclude '.cache' --exclude 'cache' --exclude 'Cache' --exclude 'logs' \
+    --exclude '.config/Code' --exclude '.vscode*' --exclude '.dotnet' --exclude '.copilot' \
+    --exclude '.local' --exclude 'Games' --exclude '.var' --exclude '.mozilla' --exclude '.thunderbird' \
+    --exclude '.config/Element' --exclude '.config/another-window-session-manager' --exclude '.config/another-window-session-manager' \
+    --exclude '.config/OpenRGB' --exclude '.secrets' \
     .  2>&1 | tee -a $log
 # Vérifie si la commande backup a réussi
 if test $pipestatus[1] -ne 0
