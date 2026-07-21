@@ -7,7 +7,6 @@ set full_snar "$dst/development.full.snar" # Variable qui contient le chemin du 
 set diff_arch "$dst/development.diff.tar.zst" # Variable qui contient le chemin de l'archive à créer, avec un nom basé sur la date et l'heure
 set diff_snar "$dst/development.diff.snar" # Variable qui contient le chemin du fichier de snapshot
 set log "/var/log/automation/development.tar.bkp.log" # Le fichier de log, doit être un fichier existant ou qui peut être créé
-set nb_max 5 # Le nombre maximum d'archives à conserver, les plus anciennes seront supprimées
 
 source /home/francois/Documents/development/automation/src/tools/log.fish 2> /dev/null
 or source /data/automation/tools/log.fish 2> /dev/null # fonctions d'écriture de log
@@ -63,7 +62,7 @@ cp -f "$full_snar" "$diff_snar" 2>&1 | tee -a $log
 
 # Creation de l'archive
 info "Creation de l'archive $diff_arch"
-tar --create --zstd \
+tar --create --verbose --zstd \
     --listed-incremental "$diff_snar" \
     --exclude '.venv' --exclude 'node_modules' --exclude '.git' \
     --file "$diff_arch" \
