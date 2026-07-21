@@ -4,11 +4,11 @@ set src "/data/config" # Variable qui contient le chemin vers le dossier à sauv
 set dst "/l/backup/config" # Variable qui contient le chemin vers le dossier de destination de la sauvegarde
 set arch "$dst/config."(date +%Y%m%dT%H%M%S | tr -d :-)".tar.zst" # Variable qui contient le chemin vers l'archive de destination, avec un nom basé sur la date et l'heure
 set log "/var/log/automation/config.tar.bkp.log" # Variable qui contient le chemin vers le fichier de log
-set nb_max 1 # Variable qui contient le nombre maximum d'archives à conserver
+set nb_max 5 # Variable qui contient le nombre maximum d'archives à conserver
 
-source /home/francois/development/automation/src/tools/log.fish
+source /home/francois/Documents/development/automation/src/tools/log.fish
 or source /data/automation/tools/log.fish # inclut le fichier log.fish pour utiliser les fonctions d'écriture de log
-source /home/francois/development/automation/src/tools/delete_old_backups.fish
+source /home/francois/Documents/development/automation/src/tools/delete_old_backups.fish
 or source /data/automation/tools/delete_old_backups.fish
 
 # Ecrit l'entete du log pour cette execution du script
@@ -49,8 +49,8 @@ end
 info "Creation de l'archive $arch"
 tar --create --verbose --zstd \
     --file "$arch" \
-    --directory (dirname $src) \
-    (basename $src)  2>&1 | tee -a $log
+    --directory (dirname "$src") \
+    (basename "$src") &| tee -a $log
 # Vérifie si la commande tar a réussi
 if test $pipestatus[1] -ne 0
     error "La sauvegarde a échoué"
@@ -60,7 +60,7 @@ success "La sauvegarde a réussi"
 
 #Supprime les anciennes sauvegardes en gardant au maximum $nb_max sauvegardes
 info "Suppression des anciennes sauvegardes"
-delete_old_backups "$dst/config.*.tar.zst" $nb_max
+delete_old_backups "$dst" "config.*.tar.zst" $nb_max
 if test $status -eq 0
     success "Anciennes sauvegardes supprimées avec succès"
 else
