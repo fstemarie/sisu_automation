@@ -68,7 +68,7 @@ restic backup \
     --exclude '.local' --exclude 'Games' --exclude '.var' --exclude '.mozilla' --exclude '.thunderbird' \
     --exclude '.config/Element' --exclude '.config/another-window-session-manager' --exclude '.config/another-window-session-manager' \
     --exclude '.config/OpenRGB' --exclude '.secrets' \
-    .  2>&1 | tee -a $log
+    .  &| tee -a $log
 # Vérifie si la commande backup a réussi
 if test $pipestatus[1] -ne 0
     error "Il y a eu une erreur lors de la création du snapshot"
@@ -81,7 +81,7 @@ info "Effacement des snapshots"
 restic forget \
     --host $hostname \
     --tag home \
-    --keep-daily 7 --keep-weekly 4 --keep-monthly 6 2>&1 | tee -a $log
+    --keep-daily 7 --keep-weekly 4 --keep-monthly 6 &| tee -a $log
 # Vérifie si la commande forget a réussi
 if test $pipestatus[1] -ne 0
     error "La suppression des snapshots a échouée"

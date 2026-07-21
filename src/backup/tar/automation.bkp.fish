@@ -50,7 +50,7 @@ info "Creation de l'archive $arch"
 tar --create --verbose --zstd \
     --file "$arch" \
     --directory (dirname "$src") \
-    (basename "$src") 2>&1 | tee -a $log
+    (basename "$src") &| tee -a $log
 # Verifie que la commande tar s'est bien exécutée
 if test $pipestatus[1] -ne 0
     error "La sauvegarde a échoué"

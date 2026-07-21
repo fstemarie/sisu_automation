@@ -67,7 +67,7 @@ restic backup \
     --exclude-caches \
     --exclude ".venv" --exclude ".git" \
     --exclude "__pycache__" --exclude "node_modules" \
-    .  2>&1 | tee -a $log
+    .  &| tee -a $log
 # Vérifie si la commande backup a réussi
 if test $pipestatus[1] -ne 0
     error "La sauvegarde a échoué"
@@ -81,7 +81,7 @@ info "Effacement des snapshots"
 restic forget \
     --host $hostname \
     --tag development \
-    --keep-daily 7 --keep-weekly 4 --keep-monthly 6 2>&1 | tee -a $log
+    --keep-daily 7 --keep-weekly 4 --keep-monthly 6 &| tee -a $log
 # Vérifie si la commande forget a réussi
 if test $pipestatus[1] -ne 0
     error "La suppression des snapshots a échouée"
