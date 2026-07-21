@@ -61,11 +61,13 @@ cp -f "$full_snar" "$diff_snar" 2>&1 | tee -a $log
 
 # Creation de l'archive
 info "Creation de l'archive $diff_arch"
-tar --create --zstd \
+tar --create --verbose --zstd \
     --listed-incremental "$diff_snar" \
-    --exclude 'Documents/development' --exclude '.cache' --exclude '.vscode*' \
-    --exclude '.var' --exclude '.mozilla' --exclude '.dotnet' \
-    --exclude '.copilot' --exclude '.local' --exclude 'Games' \
+    --exclude 'Documents/development' --exclude '.cache' --exclude 'cache' --exclude 'Cache' --exclude 'logs' \
+    --exclude '.config/another-window-session-manager' --exclude '.config/OpenRGB' --exclude '.secrets' \
+    --exclude '.config/Code' --exclude '.vscode*' --exclude '.dotnet' --exclude '.copilot' \
+    --exclude '.local' --exclude 'Games' --exclude '.var' --exclude '.mozilla' --exclude '.thunderbird' \
+    --exclude '.config/Element' --exclude '.secrets' \
     --file "$diff_arch" \
     --directory (dirname $src) \
     (basename $src) 2>&1 | tee -a $log

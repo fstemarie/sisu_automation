@@ -61,9 +61,11 @@ rm -f "$diff_arch" 2>&1 | tee -a $log
 info "Creation de l'archive $full_arch"
 tar --create --verbose --zstd \
     --listed-incremental "$full_snar" \
-    --exclude 'Documents/development' --exclude '.cache' --exclude '.vscode*' \
-    --exclude '.var' --exclude '.mozilla' --exclude '.dotnet' --exclude 'Xmas' \
-    --exclude '.copilot' --exclude '.local' --exclude 'Games' \
+    --exclude 'Documents/development' --exclude '.cache' --exclude 'cache' --exclude 'Cache' --exclude 'logs' \
+    --exclude '.config/another-window-session-manager' --exclude '.config/OpenRGB' --exclude '.secrets' \
+    --exclude '.config/Code' --exclude '.vscode*' --exclude '.dotnet' --exclude '.copilot' \
+    --exclude '.local' --exclude 'Games' --exclude '.var' --exclude '.mozilla' --exclude '.thunderbird' \
+    --exclude '.config/Element' --exclude '.secrets' \
     --file "$full_arch" \
     --directory (dirname $src) \
     (basename $src) 2>&1 | tee -a $log
