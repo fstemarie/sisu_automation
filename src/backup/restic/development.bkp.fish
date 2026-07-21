@@ -64,7 +64,6 @@ cd "$src"
 restic backup \
     --host $hostname \
     --tag development \
-    --no-scan \
     --exclude-caches \
     --exclude ".venv" --exclude ".git" \
     --exclude "__pycache__" --exclude "node_modules" \
