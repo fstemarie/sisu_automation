@@ -29,5 +29,4 @@ if test $status -ne 0
     exit 1
 end
 
-echo "٭ Scripts copied successfully
-"
+echo -e "٭ Scripts copied successfully \n\n"
