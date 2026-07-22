@@ -14,7 +14,6 @@ set scripts \
     "backup/tar/home.full.bkp.fish" \
     "backup/tar/development.full.bkp.fish"
 
-restic unlock
 for script in $scripts
     set -Ue __WARNINGS__
     if $script

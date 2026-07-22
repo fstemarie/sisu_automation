@@ -63,6 +63,7 @@ cd "$src"
 restic backup \
     --host $hostname \
     --tag home \
+    --retry-lock 2h \
     --exclude 'Documents/development' --exclude '.cache' --exclude 'cache' --exclude 'Cache' --exclude 'logs' \
     --exclude '.config/Code' --exclude '.vscode*' --exclude '.dotnet' --exclude '.copilot' \
     --exclude '.local' --exclude 'Games' --exclude '.var' --exclude '.mozilla' --exclude '.thunderbird' \

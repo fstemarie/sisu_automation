@@ -17,7 +17,6 @@ set scripts \
     "backup/tar/development.diff.bkp.fish" \
     "backup/rclone/mirror.bkp.fish"
 
-restic unlock
 for script in $scripts
     set -Ue __WARNINGS__
     if $script
